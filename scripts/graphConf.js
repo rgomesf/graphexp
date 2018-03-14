@@ -9,7 +9,7 @@ const SINGLE_COMMANDS_AND_NO_VARS = false;
 
 
 // The communication protocol with the server can be "REST" or "websocket"
-const COMMUNICATION_PROTOCOL = "REST";
+const COMMUNICATION_PROTOCOL = "websocket";
 //const COMMUNICATION_PROTOCOL = "websocket";
 // TODO: configuration for the secure server
 
