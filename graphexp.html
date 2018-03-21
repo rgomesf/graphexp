@@ -11,6 +11,15 @@
 <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">-->
 
 <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.js"></script>
+
+<script src="scripts/codemirror.js"></script>
+<link rel="stylesheet" href="css/codemirror.css">
+<script src="scripts/groovy.js"></script>
+<script src="scripts/matchbrackets.js"></script>
+
 <!--<script src="jquery-3.2.1.min.js"></script>-->
 
 <script src="http://d3js.org/d3.v4.min.js"></script>
@@ -49,8 +58,10 @@
 		</div>
 		-->
 		<div class="nav-bar">
-			<div class="container" id="nav_bar">
+			<div class="container" id="nav_bar" style="flex-grow: 1;">
 				<ul class="nav">
+					<li><input type="checkbox" name="advanced_mode" id="advanced_mode" onclick="showAdvanced()"/><label for="advanced_mode">Advanced</label></li>
+					<div class="simple-mode">
 					<li>
 						Enter a field: <span id="prop_choice"><input name="search_field" id="search_field" value="" /></span>
 					</li>
@@ -59,13 +70,18 @@
 					</li>
 					<li><button name="search query" onclick="search_query();">Search</button></li>
 					<li><button name="clear" onclick="graph_viz.clear();">Clear</button></li>
-					<li><input type="checkbox" name="Freeze" id="freeze-in" />Freeze exploration</li>
-					<li>
-						<input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/>Show labels
-					</li>
-					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Nb of layers.
-					</li>
+					</div>
+					<li><input type="checkbox" name="Freeze" id="freeze-in" /><label for="freeze-in">Freeze exploration</label></li>
+					<li><input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/><label for="showName">Show labels</label></li>
+					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Layers.</li>
+					<div class="advanced-mode hide">
+						<textarea id="advanced_search_query" name="advanced_search_query"></textarea>
+						<button name="advanced_search_query_button" onclick="advanced_search_query()">Search</button>
+					</div>
 				</ul>
+			</div>
+			<div class="container">
+				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
 			</div>
 		</div>
 		<div class="content">
@@ -73,18 +89,20 @@
 					<svg></svg>
 				</div>
 
-				<div class="aside left_bar" style="background-color:transparent;pointer-events:none;">
-					<div  id="graphInfoBar" style="background-color:transparent;pointer-events:auto;">
-						<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
-						<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/>Show/hide graph info
+				<div class="aside left_bar" style="background-color: whitesmoke;">
+					<div  id="graphInfoBar" style="background-color: whitesmoke;">
+						<div>
+							<button name="graphInfo" onclick="get_graph_info();">Get graph info</button>
+							<input type="checkbox" name="showgraphinfo" id="showgraphinfo" onchange="show_hide_element('#graphInfo')"/><label for="showgraphinfo">Show/hide graph info</label>
+						</div>
 					</div>
-					<div  id="graphInfo" style="background-color:transparent;pointer-events:none;">	
+					<div  id="graphInfo" style="background-color: whitesmoke;">
 					</div>
 				</div>
 
-				<div class="aside right_bar" id="details" style="background-color:transparent;pointer-events:none;">
+				<div class="aside right_bar" id="details" style="background-color: whitesmoke;">
 					<div id="messageArea"></div><div id="outputArea"></div>
-					<div id="nodeInfo" style="background-color:transparent;pointer-events:none;">
+					<div id="nodeInfo" style="background-color: whitesmoke;">
 					</div>				
 				</div>
 				<!--
@@ -92,11 +110,6 @@
 					<center><svg width="100" height="100"></svg></center>
 				</div>
 				-->
-		</div>
-		<div class="footer">
-			<div class="container">
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
-			</div>
 		</div>
 		<!-- INITIALIZATION -->
 		<script type="text/javascript">
@@ -118,6 +131,51 @@
 
 	function init_property_bar(){
 		document.getElementById('nbLayers').value = default_nb_of_layers;
+	}
+
+	function advanced_search_query(){
+		if (editor)
+		{
+			graph_viz.clear();
+			graphioGremlin.advanced_search_query(editor.getValue());
+		}
+	}
+
+	function showAdvanced(){
+
+		var input = document.getElementById("advanced_mode");
+		var isChecked = input.checked;
+
+		if (isChecked)
+		{
+			$(".main").toggleClass("advanced",true);
+			$(".content").toggleClass("advanced",true);
+			$(".simple-mode").toggleClass("hide",true);
+			$(".advanced-mode").toggleClass("hide",false);
+
+			editor = CodeMirror.fromTextArea(document.getElementById("advanced_search_query"), {
+				lineNumbers: true,
+				matchBrackets: true,
+				mode: "text/x-groovy"
+			});
+			editor.setSize("100%", 60);
+			//graph_viz.init("#main");
+		}
+		else
+		{
+			if (editor)
+			{
+				editor.toTextArea();
+			}
+
+
+			$(".main").toggleClass("advanced",false);
+			$(".content").toggleClass("advanced",false);
+			$(".advanced-mode").toggleClass("hide",true);
+			$(".simple-mode").toggleClass("hide",false);
+			//graph_viz.init("#main");
+		}
+
 	}
 
 	function change_nav_bar(node_data,edge_data){
@@ -151,7 +209,7 @@
 	function display_properties_bar(prop_list,item,text){
 		var nav_bar = d3.select("#graphInfoBar");
 		nav_bar.select("#property_bar_"+item).remove();
-		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item);
+		var property_bar = nav_bar.append("div").attr("id","property_bar_"+item).attr("style","");
 		property_bar.append('text').text(text).style("font-weight","bold");
 		//d3.select('#property_bar').append('text').text('hello')
 		var property_label = property_bar.selectAll('input').append("ul")
@@ -165,7 +223,6 @@
 			.attr('onchange','display_prop(this)');
 
 		property_label.append('label').text(function (d) { return d; });
-		
 
 	}
 

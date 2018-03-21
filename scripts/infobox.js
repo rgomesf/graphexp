@@ -24,7 +24,7 @@ var infobox = (function(){
 	var _table_DBinfo = {};
 	var _table_Graphinfo = {};
 	var _side_image = {};
-	var _font_size = "12px";
+	var _font_size = "11px";
 
 	////////////////////////
 	// Public function
@@ -32,13 +32,13 @@ var infobox = (function(){
 		var graph_bar = d3.select(label_graph);
 		graph_bar.append("h2").text("Graph Info")
 		_table_Graphinfo = graph_bar.append("table").attr("id","tableGraph");
-		init_table(_table_Graphinfo,["Type","Count"]);
+		init_table(_table_Graphinfo,["Type","Count"," "]);
 
 		var graphElem_bar = d3.select(label_graphElem);
 		graphElem_bar.append("h2").text("Item Info")
 		_table_IDinfo = graphElem_bar.append("table").attr("id","tableIdDetails");
 		init_table(_table_IDinfo,["Key","Value"]);
-		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails");
+		_table_DBinfo = graphElem_bar.append("table").attr("id","tableDBDetails").attr("style","margin-top:6px;");
 		init_table(_table_DBinfo,["Key","Value","Property"]);
 		hide_element(label_graph);
 
@@ -59,28 +59,31 @@ var infobox = (function(){
 
 	function display_graph_info(data){
 		_table_Graphinfo.select("tbody").remove();
+
+		if ($('#tableGraph').hasClass("dataTable"))
+		{
+			$('#tableGraph').DataTable().destroy();
+			$('#tableGraph th').removeAttr("style");
+		}
+
 	  	var info_table = _table_Graphinfo.append("tbody");
 	  	var data_to_display = data[0][0];
-	  	append_keysvalues(info_table,{"Node labels":""},"bold");
-	  	append_keysvalues(info_table,data_to_display,"normal");
+	  	append_keysvalues(info_table,data_to_display,"Node label");
 	  	data_to_display = data[1][0];
-	  	append_keysvalues(info_table,{"Nodes properties":""},"bold");
-	  	append_keysvalues(info_table,data_to_display,"normal");
+	  	append_keysvalues(info_table,data_to_display,"Node prop");
 	  	var data_to_display = data[2][0];
-	  	append_keysvalues(info_table,{"Edge labels":""},"bold");
-	  	append_keysvalues(info_table,data_to_display,"normal");
+	  	append_keysvalues(info_table,data_to_display,"Edge label");
 	  	data_to_display = data[3][0];
-	  	append_keysvalues(info_table,{"Edge properties":""},"bold");
-	  	append_keysvalues(info_table,data_to_display,"normal");
+	  	append_keysvalues(info_table,data_to_display,"Edge prop");
+		$('#tableGraph').DataTable();
 	}
 
 	function append_keysvalues(table_body,data,type){
 		for (var key in data){
 			var info_row = table_body.append("tr");
-	 		var key_text = info_row.append("td").text(key).style("font-size",_font_size);
-	 		var value_text = info_row.append("td").text(data[key]).style("font-size",_font_size);
-	 		if (type=="bold") {
-	 			key_text.style('font-weight','bolder');}
+	 		info_row.append("td").text(key).style("font-size",_font_size);
+	 		info_row.append("td").text(data[key]).style("font-size",_font_size);
+			info_row.append("td").text(type).style("font-size",_font_size);
 		}
 	}
 
@@ -137,20 +140,24 @@ var infobox = (function(){
 	}
 
 	function _display_vertex_properties(key,value,info_table) {
- 		for (var subkey in value){
- 			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
- 				for (var subsubkey in value[subkey].properties){
- 					var new_info_row = info_table.append("tr");
- 					new_info_row.append("td").text(key).style("font-size",_font_size);
- 					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
- 				}
- 			} else {
- 				var new_info_row = info_table.append("tr");
- 				new_info_row.append("td").text(key).style("font-size",_font_size);
- 				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
- 				new_info_row.append("td").text('').style("font-size",_font_size);
- 			}
+		for (var subkey in value){
+			// Ignore the summary field, which is set in graphioGremlin.extract_infov3()
+			if (subkey === "summary") {
+				continue;
+			}
+			if ( ((typeof value[subkey] === "object") && (value[subkey] !== null)) && ('properties' in value[subkey]) ){
+				for (var subsubkey in value[subkey].properties){
+					var new_info_row = info_table.append("tr");
+					new_info_row.append("td").text(key).style("font-size",_font_size);
+					new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+					new_info_row.append("td").text(subsubkey + ' : '+ value[subkey].properties[subsubkey]).style("font-size",_font_size);
+				}
+			} else {
+				var new_info_row = info_table.append("tr");
+				new_info_row.append("td").text(key).style("font-size",_font_size);
+				new_info_row.append("td").text(value[subkey].value).style("font-size",_font_size);
+				new_info_row.append("td").text('').style("font-size",_font_size);
+			}
 		}
 	}
 

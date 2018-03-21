@@ -7,7 +7,7 @@ body
 	margin: 0;
 	padding: 0;
 	color: #333;
-	background-color: #eee;
+	background-color: #fff;
 	font: 1em/1.2 "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
 	height: 100%;
 }
@@ -76,8 +76,8 @@ Layout styles
 
 .container
 {
-	padding: 1em 1.25em;
-	margin: 0 auto;
+	padding: 0.5em 1.25em;
+	margin: 0;
 }
 
 .header
@@ -94,6 +94,7 @@ Layout styles
 	color: #ddd;
 	background: #000;
 	padding: 0;
+	display: flex;
 }
 
 .content
@@ -277,8 +278,8 @@ Wide styles
 
 @media (min-width: 55em)
 {
-	.header { padding: 0.2em 3em; }
-	.nav-bar { padding: 0.5em 3em; }
+	.header { padding: 0.2em 1em; }
+	.nav-bar { padding: 0.5em 1em; }
 	.content { padding: 0em 0em; }
 
 	.main
@@ -292,6 +293,7 @@ Wide styles
 		float: left;
 		margin-bottom: 1em;
 		margin-top: 1em;
+		padding: 0 0.6em;
 	}
 	
 	.nav li
@@ -306,4 +308,28 @@ Wide styles
 		padding: 0;
 		border-bottom: 0;
 	}
+}
+
+.simple-mode, .advanced-mode
+{
+	display: inline-flex;
+}
+
+.simple-mode.hide, .advanced-mode.hide
+{
+	display: none;
+}
+
+#outputArea
+{
+	max-width: 300px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.advanced-mode
+{
+	width: 100%;
+	padding-top: 2px;
 }

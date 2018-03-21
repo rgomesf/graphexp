@@ -1,6 +1,6 @@
 
 // configuration for the graph database access
-const HOST = "localhost"
+const HOST = "pmpires"
 const PORT = "8182"
 
 // for implementations like Neptune where only single commands are allowed per request
@@ -9,7 +9,7 @@ const SINGLE_COMMANDS_AND_NO_VARS = false;
 
 
 // The communication protocol with the server can be "REST" or "websocket"
-const COMMUNICATION_PROTOCOL = "REST";
+const COMMUNICATION_PROTOCOL = "websocket";
 //const COMMUNICATION_PROTOCOL = "websocket";
 // TODO: configuration for the secure server
 
@@ -19,7 +19,7 @@ const COMMUNICATION_METHOD = "GraphSON1"
 //const COMMUNICATION_METHOD = "GraphSON3"
 
 // Graph configuration
-const default_nb_of_layers = 3;
+const default_nb_of_layers = 10;
 const node_limit_per_request = 50;
 // Simulation
 const force_strength = -600;
