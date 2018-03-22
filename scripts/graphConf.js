@@ -1,6 +1,6 @@
 
 // configuration for the graph database access
-const HOST = "pmpires"
+const HOST = "locahost"
 const PORT = "8182"
 
 // for implementations like Neptune where only single commands are allowed per request
