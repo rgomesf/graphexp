@@ -45,11 +45,11 @@ var graphioGremlin = (function () {
         return returnQuery;
     }
 
-    function get_graph_info() {
-        var gremlin_query_nodes = "nodes = g.V().groupCount().by(label);"
-        var gremlin_query_edges = "edges = g.E().groupCount().by(label);"
-        var gremlin_query_nodes_prop = "nodesprop = g.V().valueMap().select(keys).groupCount();"
-        var gremlin_query_edges_prop = "edgesprop = g.E().valueMap().select(keys).groupCount();"
+    function get_graph_info(gremlin_query_nodes,gremlin_query_edges,gremlin_query_nodes_prop,gremlin_query_edges_prop) {
+        //var gremlin_query_nodes = "nodes = g.V().groupCount().by(label);"
+        //var gremlin_query_edges = "edges = g.E().groupCount().by(label);"
+        //var gremlin_query_nodes_prop = "nodesprop = g.V().valueMap().select(keys).groupCount();"
+        //var gremlin_query_edges_prop = "edgesprop = g.E().valueMap().select(keys).groupCount();"
 
         var gremlin_query = gremlin_query_nodes + gremlin_query_nodes_prop
             + gremlin_query_edges + gremlin_query_edges_prop

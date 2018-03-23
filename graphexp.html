@@ -39,7 +39,14 @@
 	}
 
 	function get_graph_info(){
-		graphioGremlin.get_graph_info();
+
+
+		var gremlin_query_nodes = document.getElementById('gremlin_query_nodes').value
+		var gremlin_query_edges = document.getElementById('gremlin_query_edges').value
+		var gremlin_query_nodes_prop = document.getElementById('gremlin_query_nodes_prop').value
+		var gremlin_query_edges_prop = document.getElementById('gremlin_query_edges_prop').value
+
+		graphioGremlin.get_graph_info(gremlin_query_nodes,gremlin_query_edges,gremlin_query_nodes_prop,gremlin_query_edges_prop);
 		infobox.show_element("#graphInfo");
 		document.getElementById ("showgraphinfo").checked = true;
 	}
@@ -74,14 +81,18 @@
 					<li><input type="checkbox" name="Freeze" id="freeze-in" /><label for="freeze-in">Freeze exploration</label></li>
 					<li><input type="checkbox" name="showName_box" id="showName" onclick="graphShapes.show_names()"/><label for="showName">Show labels</label></li>
 					<li><input type="number" id="nbLayers" min="1" max="128" onclick="set_nb_layers()"> Layers.</li>
+					<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
 					<div class="advanced-mode hide">
 						<textarea id="advanced_search_query" name="advanced_search_query"></textarea>
 						<button name="advanced_search_query_button" onclick="advanced_search_query()">Search</button>
+						<div style="padding-left: 4px;">
+							<input value="nodes = g.V().groupCount().by(label);" type="text" style="width: 48%;" id="gremlin_query_nodes" />
+							<input value="edges = g.E().groupCount().by(label);" type="text" style="width: 48%;" id="gremlin_query_edges" />
+							<input value="nodesprop = g.V().valueMap().select(keys).groupCount();" type="text" style="width: 48%;" id="gremlin_query_nodes_prop" />
+							<input value="edgesprop = g.E().valueMap().select(keys).groupCount();" type="text" style="width: 48%;" id="gremlin_query_edges_prop" />
+						</div>
 					</div>
 				</ul>
-			</div>
-			<div class="container">
-				<a href="http://www.github.com/bricaud/graphexp">Graph Explorer V 0.7</a>
 			</div>
 		</div>
 		<div class="content">
